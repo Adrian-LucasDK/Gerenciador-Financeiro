@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Painel | Meu Financeiro{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4"><div><h1 class="h2 mb-1">Olá, {{ current_user.name }}!</h1><p class="text-secondary mb-0">Resumo dos seus lançamentos.</p></div><a class="btn btn-primary" href="{{ url_for('transaction_new') }}">+ Novo lançamento</a></div>
+<div class="row g-3 mb-4">
+<div class="col-md-4"><div class="card metric income"><div class="card-body"><div class="text-secondary">Receitas</div><div class="h3 mb-0">R$ {{ "%.2f"|format(income) }}</div></div></div></div>
+<div class="col-md-4"><div class="card metric expense"><div class="card-body"><div class="text-secondary">Despesas</div><div class="h3 mb-0">R$ {{ "%.2f"|format(expenses) }}</div></div></div></div>
+<div class="col-md-4"><div class="card metric"><div class="card-body"><div class="text-secondary">Saldo</div><div class="h3 mb-0 {% if balance < 0 %}text-danger{% else %}text-primary{% endif %}">R$ {{ "%.2f"|format(balance) }}</div></div></div></div>
+</div>
+<div class="card"><div class="card-body"><div class="d-flex justify-content-between"><h2 class="h5">Últimos lançamentos</h2><a href="{{ url_for('transactions') }}">Ver todos</a></div>
+{% if transactions %}<div class="table-responsive"><table class="table align-middle"><thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th class="text-end">Valor</th></tr></thead><tbody>
+{% for t in transactions %}<tr><td>{{ t.description }}</td><td>{{ t.category }}</td><td>{{ t.transaction_date.strftime('%d/%m/%Y') }}</td><td class="text-end {% if t.kind == 'income' %}text-success{% else %}text-danger{% endif %}">{% if t.kind == 'income' %}+{% else %}-{% endif %} R$ {{ "%.2f"|format(t.amount) }}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p class="text-secondary mb-0">Você ainda não possui lançamentos. Comece adicionando uma receita ou despesa.</p>{% endif %}
+</div></div>{% endblock %}
